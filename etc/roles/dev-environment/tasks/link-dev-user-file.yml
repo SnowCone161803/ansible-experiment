@@ -1,0 +1,15 @@
+---
+- name: dev_user has been declared
+  fail:
+    msg: "dev_user was not declared"
+  when: dev_user is not defined
+
+- name: "creating symlink for {{ dev_user }}: {{ src }} -> {{ dest }}"
+  changed_when: no
+  file:
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+    src: "{{ src }}"
+    dest: "{{ dest }}"
+    force: yes
+    state: link

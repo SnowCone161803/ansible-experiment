@@ -1,0 +1,28 @@
+---
+- name: create LINUX groups
+  group:
+    name: "{{ item }}"
+    state: present
+  loop:
+  - wireshark
+  - docker
+
+# TODO: change passwords to come from the vaule
+- name: create dev user
+  user:
+    name: "{{ dev_user }}"
+    password: "linux encoded password"
+    generate_ssh_key: yes
+    ssh_key_bits: 4096
+    ssh_key_passphrase: some-password
+    groups:
+    - wireshark
+    - docker
+    append: yes
+
+- name: "add {{ dev_user }} to {{ ansible_user }} groups"
+  user:
+    name: "{{ ansible_user }}"
+    groups:
+    - "{{ dev_user }}"
+    append: yes

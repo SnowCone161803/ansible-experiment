@@ -1,0 +1,27 @@
+---
+- hosts: dev
+  roles:
+  - role: prepare-for-ansible
+    tags:
+    - prepare
+    - gdm
+
+  - role: fubarhouse.golang
+    tags: prepare
+  - role: geerlingguy.nodejs
+    tags: prepare
+
+  # TODO: make this a depdency inside neovim-snowcone
+  - role: neovim
+    tags:
+    - gdm
+    - neovim
+  - role: neovim-snowcone
+    tags:
+    - gdm
+    - neovim
+    - neovim-config
+  - role: dev-environment
+    tags:
+    - dev
+    - gdm

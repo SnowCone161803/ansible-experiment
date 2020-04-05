@@ -1,0 +1,16 @@
+---
+- name: update cache
+  apt:
+    cache_valid_time: 43200 # 12 hours
+    force_apt_get: yes
+
+- name: install aptitude
+  apt:
+    name: aptitude
+    state: present
+    force_apt_get: yes
+
+- name: upgrade packages
+  apt:
+    upgrade: yes
+  when: is_docker_container is defined and not is_docker_container

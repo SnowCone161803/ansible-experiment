@@ -1,0 +1,31 @@
+---
+- name: set fact neovim config folder
+  set_fact:
+    dev_user_nvim_data: "{{ dev_user_xdg_data_home }}/nvim"
+
+- name: set fact neovim primary autoload folder
+  set_fact:
+    dev_user_nvim_autoload: "{{ dev_user_nvim_data }}/site/autoload"
+
+- name: create neovim folders
+  file:
+    path: "{{ item }}"
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user_group }}"
+    state: directory
+    mode: u+rwx,og-rwx
+  with_items:
+    - "{{ dev_user_nvim_autoload }}"
+
+- name: install vim-plug
+  get_url:
+    url: "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    dest: "{{ dev_user_nvim_autoload }}/plug.vim"
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user_group }}"
+    force: yes
+    mode: u+rw,og-rwx
+
+- name: install plugins into neovim
+  become_user: "{{ dev_user }}"
+  shell: nvim +PlugInstall +qall

@@ -1,0 +1,43 @@
+---
+- name: load variables with repository names
+  include_vars:
+    file: repositories.yml
+
+- name: create src folder for dev_user
+  file:
+    path: "{{ dev_user_src }}"
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+    state: directory
+    mode: ug+rwx
+
+
+#
+# COMMON repos
+#
+- include_tasks: clone-dev-repository.yml
+  name: clone my github common repos
+  vars:
+    src_repo: "{{ my_github_url }}/{{ item }}.git"
+    dest_folder: "{{ dev_user_src }}/{{ item }}"
+  loop: "{{ git_repos_my_github_common }}"
+
+
+#
+# PRIVATE repos
+#
+- include_tasks: clone-dev-repository.yml
+  name: clone my github private repos
+  vars:
+    src_repo: "{{ my_github_url }}/{{ item }}.git"
+    dest_folder: "{{ dev_user_src }}/{{ item }}"
+  loop: "{{ git_repos_my_github_private }}"
+  when: is_private_machine
+
+- include_tasks: clone-dev-repository.yml
+  name: clone private repos from zeus
+  vars:
+    src_repo: "{{ git_zeus_url }}/{{ item }}.git"
+    dest_folder: "{{ dev_user_src }}/{{ item }}"
+  loop: "{{ git_repos_zeus }}"
+  when: is_private_machine

@@ -1,0 +1,20 @@
+---
+- name: "clone repository for {{ dev_user }}: {{ src_repo }}"
+  # ansible user has ssh forwarded agent
+  become: yes
+  become_user: "{{ ansible_user }}"
+  git:
+    repo: "{{ src_repo }}"
+    dest: "{{ dest_folder }}"
+    accept_hostkey: yes
+  ignore_errors: yes
+
+- name: correct file permissions for cloned repos
+  file:
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+    path: "{{ dest_folder }}"
+    state: directory
+    recurse: yes
+    mode: ug+rw,o-rwx
+  changed_when: no

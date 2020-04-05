@@ -1,0 +1,28 @@
+# Default values
+---
+# user to ssh in as
+ansible_user: admin
+
+# become using sudo before executing commands
+ansible_become: yes
+ansible_become_method: sudo
+
+# npm config
+nodejs_version: "12.x"
+nodejs_install_npm_user: "{{ dev_user }}"
+nodejs_npm_global_packages:
+- "@angular/cli"
+- bower
+- coffeescript
+- diff-so-fancy
+- ecstatic
+- grunt-cli
+- gulp-cli
+- karma-cli
+- neovim
+- nodemon
+- npm
+- npm-cache
+- protractor
+- statify
+- typescript

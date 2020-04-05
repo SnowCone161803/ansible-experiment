@@ -1,0 +1,15 @@
+---
+- name: read SSH key to authorize
+  changed_when: no
+  shell: "cat {{ dev_user_home }}/.ssh/id_rsa.pub"
+  register: ssh_pub_key
+
+- name: add SSH key to GitHub
+  github_key:
+    name: "{{ ssh_key_name }}"
+    pubkey: "{{ ssh_pub_key.stdout }}"
+    state: present
+    # TODO: add git API key here
+    token: git_api_key
+  vars:
+  - ssh_key_name: "{{ inventory_hostname }} / {{ dev_user }}"

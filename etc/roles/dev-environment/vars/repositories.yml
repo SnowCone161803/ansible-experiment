@@ -1,0 +1,29 @@
+---
+# URLs for things
+airpoint_azure_git_url: azure
+my_github_url: git@github.com:SomeUser
+git_zeus_url: git@some.host
+
+#
+# COMMON repos
+#
+git_repos_my_github_common:
+- dev-environment
+- notes
+- airpoint
+
+
+#
+# PRIVATE repos
+#
+git_repos_zeus:
+- writing
+git_repos_my_github_private:
+- money
+
+#
+# AIRPOINT repos
+#
+git_repos_airpoint:
+- SearchClient
+- SearchServer

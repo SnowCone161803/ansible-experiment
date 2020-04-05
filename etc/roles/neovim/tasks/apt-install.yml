@@ -1,0 +1,11 @@
+---
+- name: add apt repository for neovim
+  apt_repository:
+    repo: 'ppa:neovim-ppa/{{ neovim_version }}'
+    state: present
+    codename: "{{ ansible_distribution_release }}"
+
+- name: install neovim
+  apt:
+    name: neovim
+    state: latest

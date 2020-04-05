@@ -1,0 +1,14 @@
+---
+- name: "load dev environment vars: {{ item }}"
+  include_vars:
+    file: "{{ item }}"
+  with_items:
+  - dev-environment.yml
+
+- name: run production ready tasks
+  block:
+  - include_tasks: install-packages.yml
+  - include_tasks: add-ssh-key-to-github.yml
+  - include_tasks: clone-required-repositories.yml
+  - include_tasks: link-dev-environment-config-files.yml
+  when: testing is not defined or not testing

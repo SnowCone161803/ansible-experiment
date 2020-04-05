@@ -1,0 +1,6 @@
+---
+# tasks file for prepare_for_ansible
+- include_tasks: prepare-apt.yml
+- include_tasks: install-required-packages.yml
+- include_tasks: create-dev-user.yml
+  when: dev_user is defined

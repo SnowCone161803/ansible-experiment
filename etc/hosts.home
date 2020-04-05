@@ -1,0 +1,16 @@
+# ansible-inventory --list -i <this-filename>
+all:
+  children:
+    localhost:
+      hosts:
+        127.0.1.1:
+    dev:
+      children:
+        home:
+          hosts:
+            some-host.home:
+        work:
+          hosts:
+            work-machine.hostname:
+
+# vim:ft=yaml:ts=2:sts=2:sw=2:et

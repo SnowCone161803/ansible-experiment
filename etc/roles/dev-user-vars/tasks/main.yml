@@ -1,0 +1,45 @@
+---
+- fail:
+    msg: "dev_user variable needed to specify which user neovim is to be configured for"
+  when: dev_user is not defined
+
+# assumption: each box has a single dev_user
+- fail:
+    msg: "currently cannot run dev-user-vars role more than once"
+  when: dev_user_home is defined
+
+- name: fetch dev_user home folder
+  shell: echo ${HOME}
+  register: home
+  become_user: "{{ dev_user }}"
+  changed_when: no
+
+
+### STANDARD VARIABLES
+# TODO: is there a better way to pull these in?
+- name: set dev_user_group
+  set_fact:
+    dev_user_group: "{{ dev_user }}"
+
+- name: set dev_user_home
+  set_fact:
+    dev_user_home: "{{ home.stdout }}"
+
+- name: setup dev_user xdg variables
+  set_fact:
+    dev_user_xdg_config_home: "{{ dev_user_home }}/.config"
+    dev_user_xdg_data_home: "{{ dev_user_home }}/.local/share"
+
+
+### MY VARIABLES
+- name: set dev_user_src
+  set_fact:
+    dev_user_src: "{{ dev_user_home }}/src"
+
+- name: set dev_user_environment_repo
+  set_fact:
+    dev_user_environment_repo: "{{ dev_user_src }}/dev-environment"
+
+- name: set dev_user_actual_xdg_config
+  set_fact:
+    dev_user_actual_xdg_config: "{{ dev_user_environment_repo }}/config/xdg"

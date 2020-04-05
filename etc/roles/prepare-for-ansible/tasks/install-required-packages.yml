@@ -1,0 +1,5 @@
+---
+- name: install gpg for verification of apt sources
+  apt:
+    name: gpg
+    state: present

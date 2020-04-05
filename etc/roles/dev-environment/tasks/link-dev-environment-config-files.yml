@@ -1,0 +1,72 @@
+---
+- name: update bashrc
+  become: yes
+  become_user: "{{ dev_user }}"
+  shell: "{{ dev_user_environment_repo }}/environment/update_bashrc.py"
+  changed_when: no
+
+- name: create config folders
+  file:
+    path: "{{ item }}"
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+    state: directory
+  with_items:
+  - "{{ dev_user_xdg_config_home }}"
+
+- name: create rc file symbolic links
+  include_tasks: link-dev-user-file.yml
+  vars:
+    src: "{{ dev_user_environment_repo }}/environment/{{ item }}"
+    dest: "{{ dev_user_home }}/.{{ item }}"
+  with_items:
+  - inputrc
+  - zshrc
+
+# TODO: bug here that creates links owned by root
+- name: create config symbolic links
+  include_tasks: link-dev-user-file.yml
+  vars:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+  - dev_environment:
+    src: "{{ dev_user_environment_repo }}"
+    dest: "{{ dev_user_home }}/dev-environment"
+  - user_bin_folder:
+    src: "{{ dev_user_environment_repo }}/bin"
+    dest: "{{ dev_user_home }}/bin"
+  - ansible_config:
+    src: "{{ dev_user_environment_repo }}/config/ansible"
+    dest: "{{ dev_user_home }}/ansible"
+  - python_library:
+    src: "{{ dev_user_environment_repo }}/python"
+    dest: "{{ dev_user_home }}/python"
+
+- name: setup xdg_config
+  vars:
+    xdg_folders:
+    - git
+    - nvim
+  block:
+
+  - name: remove xdg folders
+    changed_when: no
+    file:
+      path: "{{ dev_user_xdg_config_home }}/{{ item }}"
+      state: absent
+    with_items: "{{ xdg_folders }}"
+
+  - name: link xdg config files
+    include_tasks: link-dev-user-file.yml
+    vars:
+      src: "{{dev_user_actual_xdg_config}}/{{ item }}"
+      dest: "{{ dev_user_xdg_config_home }}/{{ item }}"
+    with_items: "{{ xdg_folders }}"
+
+  - name: remove config files that xdg config replaces
+    file:
+      path: "{{ dev_user_home}}/{{ item }}"
+      state: absent
+    with_items:
+      - .gitconfig

@@ -1,0 +1,20 @@
+---
+- name: get package name variables
+  include_vars:
+    file: packages.yml
+
+- name: purge unwanted packages
+  apt:
+    name: "{{ apt_packages_to_purge }}"
+    state: absent
+
+- name: install apt packages for the terminal
+  apt:
+    name: "{{ terminal_apt_packages }}"
+    state: present
+
+- name: install GUI apt packages
+  apt:
+    name: "{{ gui_apt_packages }}"
+    state: present
+  when: has_gui is defined and has_gui

@@ -1,0 +1,26 @@
+---
+- hosts: dev
+  roles:
+  - dev-user-vars
+
+- hosts: dev
+  tasks:
+  - name: remove docker snap
+    snap:
+      name: docker
+      state: absent
+
+  - name: show dev_user_home
+    debug:
+      msg: "{{ dev_user_home }}"
+
+  - name: remove dev user vim config folder (migrating to neovim)
+    file:
+      path: "{{ item }}"
+      state: absent
+      owner: "{{ ansible_user }}"
+      mode: '0777'
+    with_items:
+      - "{{ dev_user_home }}/.vim/"
+      - "{{ dev_user_home }}/.vimrc"
+    when: dev_user_home is defined
